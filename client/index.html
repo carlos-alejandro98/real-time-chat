@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Real Time</title>
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            display: grid;
+            place-items: center;
+            height: 100vh;
+            padding: 36px 36px 100px 36px;
+            grid-template-rows: 1fr;
+        }
+
+        :root{
+            color-scheme: light dark;
+        }
+        
+        #messages{
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        #messages > li{
+            padding: 8px 12px;
+        }
+
+        #messages > li:nth-child(odd){
+            background-color: #eee;
+        }
+
+        #chat{
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            overflow: hidden;
+            width: 350px;
+            height: 100%;
+            position: relative;
+        }
+
+        #form{
+            bottom: 0;
+            display: flex;
+            height: 48px;
+            left: 0;
+            padding: 4px;
+            position: absolute;
+            right: 0;
+        }
+        #inputMessage{
+            border-radius: 9999px;
+            border: 1px solid #eee;
+            flex: 1;
+            margin: 4px;
+            padding: 0 8px;
+        }
+
+        #inputMessage:focus{
+            outline: 0;
+        }
+
+        #form > button{
+            background-color: #09f;
+            color: #fff;
+            border: 0;
+            margin: 4px;
+            border-radius: 4px;
+        }
+
+        #form > button:hover{
+            background-color: #0af;
+        }
+    </style>
+</head>
+
+<body>
+    <section id="chat">
+        <ul id="messages"></ul>
+        <form id="form">
+            <input type="text" name="message" autocomplete="off" id="inputMessage" placeholder="Digite su mensaje">
+            <button type="submit">Enviar</button>
+        </form>
+    </section>
+
+    <script type="module">
+        import { io } from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js";
+
+        const socket = io({
+            auth: {
+                serverOffset: 0
+            }
+        });
+
+        const form = document.querySelector('#form');
+        const inputMessage = document.querySelector('#inputMessage');
+        const messages = document.querySelector('#messages');
+
+        socket.on('chat message', (msg, serverOffset) => {
+            const item = `<li>${msg}</li>`;
+            messages.insertAdjacentHTML('beforeend', item);
+            window.scrollTo(0, document.body.scrollHeight);
+            socket.auth.serverOffset = serverOffset;
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const message = inputMessage.value.trim();
+
+            if (message) {
+                socket.emit('chat message', message);                inputMessage.value = '';
+                inputMessage.focus();
+            }
+        });
+    </script>
+</body>
+
+</html>
