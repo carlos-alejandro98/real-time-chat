@@ -20,7 +20,7 @@
             display: grid;
             place-items: center;
             height: 100vh;
-            padding: 36px 36px 100px 36px;
+            padding: 36px;
             grid-template-rows: 1fr;
         }
 
@@ -60,7 +60,7 @@
             display: flex;
             height: 48px;
             left: 0;
-            padding: 4px;
+            padding: 4px 20px 4px 4px;
             position: absolute;
             right: 0;
         }
@@ -92,6 +92,11 @@
 </head>
 
 <body>
+
+    <section>
+        <h4>Estas conectado como: <strong id="userName"></strong></h4>
+    </section>
+
     <section id="chat">
         <ul id="messages"></ul>
         <form id="form">
@@ -103,10 +108,14 @@
     <script type="module">
         import { io } from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js";
 
-        
+        const form = document.querySelector('#form');
+        const inputMessage = document.querySelector('#inputMessage');
+        const messages = document.querySelector('#messages');
+        const userNameElement = document.querySelector('#userName');
+
         let userName = prompt("Please enter your name");
         localStorage.setItem('userName', userName);
-
+        userNameElement.innerHTML = userName;
 
         const socket = io({
             auth: {
@@ -114,10 +123,6 @@
                 serverOffset: 0
             }
         });
-
-        const form = document.querySelector('#form');
-        const inputMessage = document.querySelector('#inputMessage');
-        const messages = document.querySelector('#messages');
 
         socket.on('chat message', (msg, serverOffset, userName) => {
             const item = `
