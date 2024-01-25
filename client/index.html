@@ -24,27 +24,29 @@
             grid-template-rows: 1fr;
         }
 
-        :root{
+        :root {
             color-scheme: light dark;
         }
-        
-        #messages{
+
+        #messages {
             list-style-type: none;
             margin: 0;
             padding: 0;
-            overflow-y: auto;
+            overflow-y: scroll;
             height: 100%;
+            scroll-behavior: smooth;
+            padding-bottom: 48px;
         }
 
-        #messages > li{
+        #messages>li {
             padding: 8px 12px;
         }
 
-        #messages > li:nth-child(odd){
+        #messages>li:nth-child(odd) {
             background-color: #eee;
         }
 
-        #chat{
+        #chat {
             border: 1px solid #ccc;
             border-radius: 4px;
             overflow: hidden;
@@ -53,7 +55,7 @@
             position: relative;
         }
 
-        #form{
+        #form {
             bottom: 0;
             display: flex;
             height: 48px;
@@ -62,7 +64,8 @@
             position: absolute;
             right: 0;
         }
-        #inputMessage{
+
+        #inputMessage {
             border-radius: 9999px;
             border: 1px solid #eee;
             flex: 1;
@@ -70,11 +73,11 @@
             padding: 0 8px;
         }
 
-        #inputMessage:focus{
+        #inputMessage:focus {
             outline: 0;
         }
 
-        #form > button{
+        #form>button {
             background-color: #09f;
             color: #fff;
             border: 0;
@@ -82,7 +85,7 @@
             border-radius: 4px;
         }
 
-        #form > button:hover{
+        #form>button:hover {
             background-color: #0af;
         }
     </style>
@@ -100,8 +103,14 @@
     <script type="module">
         import { io } from "https://cdn.socket.io/4.3.2/socket.io.esm.min.js";
 
+        
+        let userName = prompt("Please enter your name");
+        localStorage.setItem('userName', userName);
+
+
         const socket = io({
             auth: {
+                userName: localStorage.getItem('userName'),
                 serverOffset: 0
             }
         });
@@ -110,11 +119,17 @@
         const inputMessage = document.querySelector('#inputMessage');
         const messages = document.querySelector('#messages');
 
-        socket.on('chat message', (msg, serverOffset) => {
-            const item = `<li>${msg}</li>`;
+        socket.on('chat message', (msg, serverOffset, userName) => {
+            const item = `
+                <li>
+                    <p>${msg}</p>
+                    <small>${userName}</small>
+                </li>`;
             messages.insertAdjacentHTML('beforeend', item);
             window.scrollTo(0, document.body.scrollHeight);
             socket.auth.serverOffset = serverOffset;
+            // scroll to bottom of messages
+            messages.scrollTop = messages.scrollHeight;
         });
 
         form.addEventListener('submit', (e) => {
@@ -123,7 +138,8 @@
             const message = inputMessage.value.trim();
 
             if (message) {
-                socket.emit('chat message', message);                inputMessage.value = '';
+                socket.emit('chat message', message);
+                inputMessage.value = '';
                 inputMessage.focus();
             }
         });
