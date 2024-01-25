@@ -1,9 +1,9 @@
 Chat en tiempo real realizado con los siguientes lenguajes de programación:
 <br/>
-1- Node.js
-2- Socket.io
-3- SQL
-4- HTML y CSS
+1- Node.js<br/>
+2- Socket.io<br/>
+3- SQL<br/>
+4- HTML y CSS<br/>
 
 <br/>
 ## Uso Turso en Windows
