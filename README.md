@@ -9,12 +9,10 @@ Chat en tiempo real realizado con los siguientes lenguajes de programación:
 ## Uso Turso en Windows
 <br/>
 
-1- Instalar WSL --> https://learn.microsoft.com/en-us/windows/wsl/install
+1- Instalar WSL --> **https://learn.microsoft.com/en-us/windows/wsl/install**
 <br/>
-2- Instalar Turso con el siguiente comando:
+2- Instalar Turso con el siguiente comando: --> **curl -sSfL https://get.tur.so/install.sh | bash**
 <br/>
-curl -sSfL https://get.tur.so/install.sh | bash
-<br/>
-3- Logearse en Turso --> turso auth login
+3- Logearse en Turso --> **turso auth login**
 
-https://docs.turso.tech/cli/installation#windows
+**https://docs.turso.tech/cli/installation#windows**
